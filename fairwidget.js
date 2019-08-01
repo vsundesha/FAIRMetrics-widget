@@ -1,109 +1,88 @@
-// import {d3} from "https://d3js.org/d3.v5.min.js";
-import * as c3 from "c3";
+class FairMetrics extends HTMLElement {
+	constructor() {
+		super();
+		const ShadowRootInit = { mode: 'open' };
+		const shadow = this.attachShadow(ShadowRootInit);
 
-function createFairMetricsChart(id, data) {
-  data.unshift("value")
-  var chart = c3.generate({
-    bindto: "#" + id,
-    data: {
-      x: 'Letter',
-      columns: [
-        ['Letter','F','A','I','R'],
-        data
-      ],
-      names: {
-        fair: "Fair"
-      },
-      type: "bar",
-      colors: {
-        value: function(d) {
-          if(d.value<0.3){
-            return 'red'
-          } else if(d.value>=0.3 && d.value<0.7){
-            return 'yellow'
-          } else if(d.value>=0.3){
-            return 'green'
-          }
-        }
-      },
-      
-    },
-    axis: {
-      x: {
-        type: 'category'
-      },
-      y:{
-        max: 0.9
-      }
-    },
-    legend: {
-      show: false
-    }
-  });
+		//get data
+		const data = this.metrics;
+		if (
+			data &&
+			Array.isArray(JSON.parse(data)) &&
+			JSON.parse(data).length == 4
+		) {
+			const metricsData = JSON.parse(data);
 
-  d3.select('.fairmetrics').insert('div', '.chart').attr('class', 'oeb-legend')
-  .insert('div','.chart').attr('class','legend-scale')
-  .insert('ul','.chart').attr('class','legend-labels')
-  
-  .selectAll('span')
+			const size = this.size;
 
-  .data(['Online','Offline','No information captured', 'Access Time'])
-  .enter().append('li').html(function (id) { return id; }).append('span')
-  .attr('data-id', function (id) { return id; })
-  
-  .each(function (id) {
-      d3.select(this).style('background-color', chart.color(id));
-  })
+			//Sequence of letters
+			const sequence = 'FAIR';
+
+			//definde canvas
+			const widgetContainer = document.createElement('canvas');
+			widgetContainer.setAttribute('width', size * 2.33);
+			widgetContainer.setAttribute('height', size);
+			const ctx = widgetContainer.getContext('2d');
+
+			//Text font size
+			ctx.font = size + 'px sans-serif';
+
+			//get color for styling
+			function getColor(metric) {
+				let color = 'white';
+				if (metric < 0.3) {
+					color = 'red';
+				} else if (metric >= 0.3 && metric < 0.7) {
+					color = 'yellow';
+				} else if (metric >= 0.3) {
+					color = 'green';
+				}
+				return color;
+			}
+
+			//Color each letter
+			function drawWidget(str, x, y) {
+				for (let i = 0; i <= str.length; i++) {
+					const ch = str.charAt(i);
+					const metric = metricsData[i];
+					const color = getColor(metric);
+					ctx.fillStyle = color;
+					ctx.strokeStyle = getColor(metric);
+					ctx.fillText(str.charAt(i), x, y);
+					ctx.strokeText(str.charAt(i), x, y);
+					x += ctx.measureText(ch).width;
+				}
+			}
+
+			drawWidget(sequence, 0, size - size / 8);
+
+			shadow.appendChild(widgetContainer);
+		}
+	}
+
+	get metrics() {
+		return this.getAttribute('data-fair-metrics') || '';
+	}
+
+	get size() {
+		return this.getAttribute('size') || '';
+	}
+
+	connectedCallback() {
+		console.log('Custom chart element added to page.');
+	}
+
+	disconnectedCallback() {
+		console.log('Custom chart element removed from page.');
+	}
+
+	adoptedCallback() {
+		console.log('Custom chart element moved to new page.');
+	}
+
+	attributeChangedCallback(name, oldValue, newValue) {
+		console.log('Custom chart element attributes changed.');
+	}
 }
 
-function createFairGaugeChart(id, data) {
-  const arrSum = arr => arr.reduce((a, b) => a + b, 0);
-  let datasum = (arrSum(data) * 100) / data.length;
-
-  var chart = c3.generate({
-    bindto: "#" + id,
-
-    data: {
-      columns: [["Fair", datasum]],
-      type: "gauge"
-    },
-    gauge: {},
-    color: {
-      pattern: ["#FF0000", "#F6C600", "#60B044"], // the three color levels for the percentage values.
-      threshold: {
-        values: [30, 60, 100]
-      }
-    }
-  });
-}
-
-function createChart(id, data) {
-  if (id.includes("fairmetrics")) {
-    createFairMetricsChart(id, data);
-  } else if (id.includes("fairgauge")) {
-    createFairGaugeChart(id, data);
-  } else {
-    createFairMetricsChart(id, data);
-  }
-}
-
-function loadChart(elems) {
-  // console.log(elems);
-  if (elems === undefined) {
-    elems = document.getElementsByClassName("fairmetrics");
-  }
-
-  let i = 0;
-  for (let y of elems) {
-    try {
-      i++;
-      const dataId = y.getAttribute("id");
-      const dataFAIR = JSON.parse(y.getAttribute("data-fair-metrics"));
-      createChart(dataId, dataFAIR);
-    } catch (err) {
-      console.log("Internat error :" + err);
-    }
-  }
-}
-
-loadChart();
+customElements.define('fair-metrics', FairMetrics);

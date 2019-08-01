@@ -4,8 +4,6 @@
   "description": "",
   "main": "fairwidget.js",
   "dependencies": {
-    "c3": "^0.7.2",
-    "d3": "^5.9.7",
     "webpack-cli": "^3.3.6",
     "webpack": "^4.37.0"
   },
