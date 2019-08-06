@@ -1,7 +1,6 @@
 class FairMetrics extends HTMLElement {
 	constructor() {
 		super();
-		
 
 		//get data
 		const data = this.metrics;
@@ -12,47 +11,45 @@ class FairMetrics extends HTMLElement {
 		) {
 			const metricsData = JSON.parse(data);
 
-			const size = this.size;
-
-			//Sequence of letters
-			const sequence = 'FAIR';
-
-			//definde canvas
+			const width = this.width;
+			//definde svg
 			
 			const widgetContainer = document.createElementNS("http://www.w3.org/2000/svg",'svg');
-			widgetContainer.setAttribute("width",size)
+			
+			widgetContainer.setAttribute("width",width);
+			widgetContainer.setAttribute("height","auto")
 			//Varis from browser to browser !!!!! chrome works best with 0 0 50 50
-			widgetContainer.setAttribute("viewBox", "0 0 60 50");
-			// widgetContainer.setAttribute("width",size)
+			widgetContainer.setAttribute("viewBox", "0 15 50 20");
+			// widgetContainer.setAttribute("width",width)
 			
 			widgetContainer.setAttribute("xmlns", "http://www.w3.org/2000/svg");
 			
 			widgetContainer.innerHTML=`
 			<defs>
 				<LinearGradient id="F" x1="0%" y1="100%" x2="0%" y2="0%">
-					<stop offset="${metricsData[0]*63+20}%" stop-color="#06aed5" />
-					<stop offset="${metricsData[0]*63+20}%" stop-color="#eaeaea" />
+					<stop offset="${metricsData[0]*64+19}%" stop-color="#06aed5" />
+					<stop offset="${metricsData[0]*64+19}%" stop-color="#eaeaea" />
 				</LinearGradient>
 			</defs>
 			<defs>
 				<LinearGradient id="A" x1="0%" y1="100%" x2="0%" y2="0%">
-					<stop offset="${metricsData[1]*63+20}%" stop-color="#f0c808" />
-					<stop offset="${metricsData[1]*63+20}%" stop-color="#eaeaea" />
+					<stop offset="${metricsData[1]*64+19}%" stop-color="#f0c808" />
+					<stop offset="${metricsData[1]*64+19}%" stop-color="#eaeaea" />
 				</LinearGradient>
 			</defs>
 			<defs>
 				<LinearGradient id="I" x1="0%" y1="100%" x2="0%" y2="0%">
-					<stop offset="${metricsData[2]*63+20}%" stop-color="#59cd90" />
-					<stop offset="${metricsData[2]*63+20}%" stop-color="#eaeaea" />
+					<stop offset="${metricsData[2]*64+19}%" stop-color="#59cd90" />
+					<stop offset="${metricsData[2]*64+19}%" stop-color="#eaeaea" />
 				</LinearGradient>
 			</defs>
 			<defs>
 				<LinearGradient id="R" x1="0%" y1="100%" x2="0%" y2="0%">
-					<stop offset="${metricsData[3]*63+20}%" stop-color="#e23b49" />
-					<stop offset="${metricsData[3]*63+20}%" stop-color="#eaeaea" />
+					<stop offset="${metricsData[3]*64+19}%" stop-color="#e23b49" />
+					<stop offset="${metricsData[3]*64+19}%" stop-color="#eaeaea" />
 				</LinearGradient>
 			</defs>
-			<text y=30>
+			<text font-family="Arial" y=30>
 				<tspan fill="url(#F)">F</tspan>  
 				<tspan fill="url(#A)">A</tspan>
 				<tspan fill="url(#I)">I</tspan>
@@ -68,11 +65,11 @@ class FairMetrics extends HTMLElement {
 	}
 
 	get metrics() {
-		return this.getAttribute('data-fair-metrics') || '';
+		return this.getAttribute('data-fair-metrics') || '[0,0,0,0]';
 	}
 
-	get size() {
-		return this.getAttribute('size') || '';
+	get width() {
+		return this.getAttribute('width') || '100%';
 	}
 
 	connectedCallback() {
