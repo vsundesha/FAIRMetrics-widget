@@ -9,20 +9,26 @@ class FairMetrics extends HTMLElement {
 			Array.isArray(JSON.parse(data)) &&
 			JSON.parse(data).length == 4
 		) {
+			
+
+
 			const metricsData = JSON.parse(data);
 
 			const width = this.width;
 			//definde svg
 			
 			const widgetContainer = document.createElementNS("http://www.w3.org/2000/svg",'svg');
+			const widgetTooltip = document.createElementNS("http://www.w3.org/2000/svg","svg");
 			
 			widgetContainer.setAttribute("width",width);
-			widgetContainer.setAttribute("height","auto")
+			//overflow visible for tool
+			widgetContainer.style.overflow ="visible"
+			widgetContainer.addEventListener('mousemove', e => ShowTooltip(e));
+			
+			widgetContainer.addEventListener('mouseout', e => HideTooltip(e));
 			//Varis from browser to browser !!!!! chrome works best with 0 0 50 50
 			widgetContainer.setAttribute("viewBox", "0 15 50 20");
-			// widgetContainer.setAttribute("width",width)
 			
-			widgetContainer.setAttribute("xmlns", "http://www.w3.org/2000/svg");
 			
 			widgetContainer.innerHTML=`
 			<defs>
@@ -49,18 +55,63 @@ class FairMetrics extends HTMLElement {
 					<stop offset="${metricsData[3]*64+19}%" stop-color="#eaeaea" />
 				</LinearGradient>
 			</defs>
-			<text font-family="Arial" y=30>
-				<tspan fill="url(#F)">F</tspan>  
-				<tspan fill="url(#A)">A</tspan>
-				<tspan fill="url(#I)">I</tspan>
-				<tspan fill="url(#R)">R</tspan>
-			</text>
+			<g class="tooltip">
+				<text font-family="Arial" y=30>
+					<title>${metricsData}</title>
+					<tspan fill="url(#F)">F</tspan>  
+					<tspan fill="url(#A)">A</tspan>
+					<tspan fill="url(#I)">I</tspan>
+					<tspan fill="url(#R)">R</tspan>
+				</text>
+				<rect width="30px" height="10px" fill="blue" id="tooltip-span" >
+				<p>hola</p>
+				</rect> 
+			</g>
+			<style>
+			.tooltip {
+				text-decoration:none;
+				
+			}
+	
+			g rect {
+				display:none;
+			}
+			g:hover rect {
+				display:block;
+				
+				overflow:hidden;
+			}
+			</style>
 			`
+
+
+			// <rect id="tooltip" opacity="1" width="100%"  height="${width}">
+			// 		<text>Hola</text>
+			// 	</rect>
+			
+			function ShowTooltip(e) {
+				const tooltip = shadow.getElementById('tooltip-span');
+				console.log(e);
+				let x = e.offsetX;
+				let y = e.offsetY;
+				// tooltip.setAttribute("transform","translate("+x+","+y+")")
+				tooltip.setAttribute("y","33px");
+				tooltip.setAttribute("x","10px");
+			}
+			
+			function HideTooltip(evt) {
+				console.log("remove")
+				// let tooltip = shadow.getElementById('tooltip');
+				// tooltip.setAttribute("opacity", 0);
+			}
+
+			
+
+
 			const shadow = this.attachShadow({ mode: 'open' });
 			
-			
 			shadow.appendChild(widgetContainer);
-			
+
 		}
 	}
 

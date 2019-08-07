@@ -10,15 +10,53 @@
 
 <body>
     <p>The metrics data goes from 0 to 1.</p>
-    <div id="main">
-        <fair-metrics width="100%" data-fair-metrics="[0.01,0.1,0.2,0.3]"></fair-metrics>
+    <!-- <div id="main"> -->
+        <fair-metrics width="15%" data-fair-metrics="[0.01,0.1,0.2,0.3]"></fair-metrics>
         <fair-metrics width="33%" data-fair-metrics="[0.4,0.5,0.6,0.7]"></fair-metrics>
-        <fair-metrics width="33%" data-fair-metrics="[0.8,0.9,0.99,1]"></fair-metrics>
+<!--         <fair-metrics width="33%" data-fair-metrics="[0.8,0.9,0.99,1]"></fair-metrics>
     </div>
     <p>If no data is given the widget will remain gray            </p>
-    <fair-metrics width="33%"></fair-metrics>
+    <fair-metrics width="33%" data-fair-metrics="[0.01,0.1,0.2,0.3]"></fair-metrics>
+
+    <svg>
+        <g>
+        <text class="tooltip" font-family="Arial" y=30>
+            <tspan fill="red" font-size="30px">holaa</tspan>  
+            
+            
+        </text>
+        <rect width="100px" height="100px" fill="blue" id="tooltip-span" ></rect> 
+    </g>
+    </svg>
+    <style>
+        .tooltip {
+            text-decoration:none;
+            position:relative;
+        }
+
+        g rect {
+            display:none;
+        }
+        g:hover rect {
+            display:block;
+            position:fixed;
+            overflow:hidden;
+        }
+        </style>
+        <script>
+        var tooltipSpan = document.getElementById('tooltip-span');
+
+window.onmousemove = function (e) {
+    var x = e.clientX,
+        y = e.clientY;
+        console.log(x,y)
+    tooltipSpan.setAttribute("y",y);
+    tooltipSpan.setAttribute("x",x);
+};
+        </script> -->
+    
 </body>
-<script src="./fairwidget.min.js"></script>
+<script src="./fairwidget.js"></script>
     <style>
         #main{
             width:100%
