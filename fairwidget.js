@@ -13,6 +13,18 @@ class FairMetrics extends HTMLElement {
 
 			const width = this.width;
 			
+
+			const fcolor = "#06aed5";
+			const acolor = "#f0c808";
+			const icolor = "#59cd90";
+			const rcolor = "#e23b49";
+			const nullcolor = "#eaeaea";
+
+			const findable = `<span style='color:${fcolor}'>Findable</span> : ${metricsData[0]*100}%`;
+			const accessible = `<span style='color:${acolor}'>Accessible</span> : ${metricsData[1]*100}%`;
+			const interoperable = `<span style='color:${icolor}'>Interoperable</span> : ${metricsData[2]*100}%`;
+			const reusable = `<span style='color:${rcolor}'>Reusable</span> : ${metricsData[3]*100}%`;
+
 			//define tooltip
 			const widgetTooltip = document.createElement('svg');
 			widgetTooltip.setAttribute("id","tooltip");
@@ -21,14 +33,20 @@ class FairMetrics extends HTMLElement {
 	
 			//define container
 			const widgetContainer = document.createElementNS("http://www.w3.org/2000/svg",'svg');
-			const text = `<p>Findable : ${metricsData[0]}<br>Accessible : ${metricsData[1]}<br>Interoperable : ${metricsData[2]}<br>Reusable : ${metricsData[3]}</p>`
+			const text = `
+			<p>
+			${findable}<br>
+			${accessible}<br>
+			${interoperable}<br>
+			${reusable}
+			</p>`
 			widgetContainer.setAttribute("width",width);
 			//overflow visible for tool
 			widgetContainer.style.overflow ="hidden"
 			widgetContainer.addEventListener('mousemove', e => showTooltip(e, text));
 			
 			
-			widgetContainer.addEventListener('mouseout', e => hideTooltip(e));
+			widgetContainer.addEventListener('mouseout', e => hideTooltip());
 			//Varis from browser to browser !!!!! chrome works best with 0 0 50 50
 			widgetContainer.setAttribute("viewBox", "0 18 50 13");
 			widgetContainer.style.backgroundColor="white"
@@ -39,35 +57,35 @@ class FairMetrics extends HTMLElement {
 			
 			<defs>
 				<LinearGradient id="F" x1="0%" y1="100%" x2="0%" y2="0%">
-					<stop offset="${metricsData[0]*64+19}%" stop-color="#06aed5" />
-					<stop offset="${metricsData[0]*64+19}%" stop-color="#eaeaea" />
+					<stop offset="${metricsData[0]*64+19}%" stop-color="${fcolor}" />
+					<stop offset="${metricsData[0]*64+19}%" stop-color="${nullcolor}" />
 				</LinearGradient>
 			</defs>
 			<defs>
 				<LinearGradient id="A" x1="0%" y1="100%" x2="0%" y2="0%">
-					<stop offset="${metricsData[1]*64+19}%" stop-color="#f0c808" />
-					<stop offset="${metricsData[1]*64+19}%" stop-color="#eaeaea" />
+					<stop offset="${metricsData[1]*64+19}%" stop-color="${acolor}" />
+					<stop offset="${metricsData[1]*64+19}%" stop-color="${nullcolor}" />
 				</LinearGradient>
 			</defs>
 			<defs>
 				<LinearGradient id="I" x1="0%" y1="100%" x2="0%" y2="0%">
-					<stop offset="${metricsData[2]*64+19}%" stop-color="#59cd90" />
-					<stop offset="${metricsData[2]*64+19}%" stop-color="#eaeaea" />
+					<stop offset="${metricsData[2]*64+19}%" stop-color="${icolor}" />
+					<stop offset="${metricsData[2]*64+19}%" stop-color="${nullcolor}" />
 				</LinearGradient>
 			</defs>
 			<defs>
 				<LinearGradient id="R" x1="0%" y1="100%" x2="0%" y2="0%">
-					<stop offset="${metricsData[3]*64+19}%" stop-color="#e23b49" />
-					<stop offset="${metricsData[3]*64+19}%" stop-color="#eaeaea" />
+					<stop offset="${metricsData[3]*64+19}%" stop-color="${rcolor}" />
+					<stop offset="${metricsData[3]*64+19}%" stop-color="${nullcolor}" />
 				</LinearGradient>
 			</defs>
 			
 			<text font-family="Arial" y=30>
 				<title></title>
-				<tspan fill="url(#F)">F</tspan>  
-				<tspan fill="url(#A)">A</tspan>
-				<tspan fill="url(#I)">I</tspan>
-				<tspan fill="url(#R)">R</tspan>
+				<tspan id="f" fill="url(#F)">F</tspan>  
+				<tspan id="a" fill="url(#A)">A</tspan>
+				<tspan id="i" fill="url(#I)">I</tspan>
+				<tspan id="r" fill="url(#R)">R</tspan>
 			</text>
 			<style>
 				#tooltip {
@@ -78,12 +96,28 @@ class FairMetrics extends HTMLElement {
 					box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
 				}
 			</style>
-			
 			`
+
+			
 			function showTooltip(evt, text) {
+				
+				switch (evt.target.getAttribute("id")) {
+					case "f":
+						text = findable;
+						break;
+					case "a":
+						text = accessible;
+						break;
+					case "i":
+						text = interoperable;
+						break;
+					case "r":
+						text = reusable;
+						break;
+					default:
+						break;
+				}
 				const tooltip = shadow.getElementById("tooltip");
-				
-				
 				tooltip.style.display = "block";
 				tooltip.innerHTML = text;
 				tooltip.style.left = evt.pageX + 10 + 'px';
@@ -91,7 +125,7 @@ class FairMetrics extends HTMLElement {
 				
 			}
 			  
-			function hideTooltip(e) {
+			function hideTooltip() {
 				const tooltip = shadow.getElementById("tooltip");
 				tooltip.style.display = "none";
 			}
@@ -102,7 +136,7 @@ class FairMetrics extends HTMLElement {
 
 			//append fair metrics svg to shadow
 			shadow.appendChild(widgetContainer);
-
+			
 		}
 	}
 
@@ -112,22 +146,6 @@ class FairMetrics extends HTMLElement {
 
 	get width() {
 		return this.getAttribute('width') || '100%';
-	}
-
-	connectedCallback() {
-		console.log('Custom chart element added to page.');
-	}
-
-	disconnectedCallback() {
-		console.log('Custom chart element removed from page.');
-	}
-
-	adoptedCallback() {
-		console.log('Custom chart element moved to new page.');
-	}
-
-	attributeChangedCallback(name, oldValue, newValue) {
-		console.log('Custom chart element attributes changed.');
 	}
 }
 
