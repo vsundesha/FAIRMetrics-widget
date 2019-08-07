@@ -9,28 +9,34 @@ class FairMetrics extends HTMLElement {
 			Array.isArray(JSON.parse(data)) &&
 			JSON.parse(data).length == 4
 		) {
-			
-
-
 			const metricsData = JSON.parse(data);
 
 			const width = this.width;
-			//definde svg
 			
+			//define tooltip
+			const widgetTooltip = document.createElement('svg');
+			widgetTooltip.setAttribute("id","tooltip");
+			widgetTooltip.setAttribute("display","none");
+			widgetTooltip.setAttribute("style","position:absolute; display:none;");
+	
+			//define container
 			const widgetContainer = document.createElementNS("http://www.w3.org/2000/svg",'svg');
-			const widgetTooltip = document.createElementNS("http://www.w3.org/2000/svg","svg");
-			
+			const text = `<p>Findable : ${metricsData[0]}<br>Accessible : ${metricsData[1]}<br>Interoperable : ${metricsData[2]}<br>Reusable : ${metricsData[3]}</p>`
 			widgetContainer.setAttribute("width",width);
 			//overflow visible for tool
-			widgetContainer.style.overflow ="visible"
-			// widgetContainer.addEventListener('mousemove', e => ShowTooltip(e));
+			widgetContainer.style.overflow ="hidden"
+			widgetContainer.addEventListener('mousemove', e => showTooltip(e, text));
 			
-			// widgetContainer.addEventListener('mouseout', e => HideTooltip(e));
+			
+			widgetContainer.addEventListener('mouseout', e => hideTooltip(e));
 			//Varis from browser to browser !!!!! chrome works best with 0 0 50 50
-			widgetContainer.setAttribute("viewBox", "0 15 50 20");
+			widgetContainer.setAttribute("viewBox", "0 18 50 13");
+			widgetContainer.style.backgroundColor="white"
+
 			
 			
 			widgetContainer.innerHTML=`
+			
 			<defs>
 				<LinearGradient id="F" x1="0%" y1="100%" x2="0%" y2="0%">
 					<stop offset="${metricsData[0]*64+19}%" stop-color="#06aed5" />
@@ -55,17 +61,46 @@ class FairMetrics extends HTMLElement {
 					<stop offset="${metricsData[3]*64+19}%" stop-color="#eaeaea" />
 				</LinearGradient>
 			</defs>
+			
 			<text font-family="Arial" y=30>
-				<title>Findable : ${metricsData[0]}\nAccessible : ${metricsData[1]}\nInteroperable : ${metricsData[2]}\nReusable : ${metricsData[3]}</title>
+				<title></title>
 				<tspan fill="url(#F)">F</tspan>  
 				<tspan fill="url(#A)">A</tspan>
 				<tspan fill="url(#I)">I</tspan>
 				<tspan fill="url(#R)">R</tspan>
 			</text>
+			<style>
+				#tooltip {
+					color: black;
+					background: white;
+					padding: 5px;
+					opacity:0.9;
+					box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+				}
+			</style>
+			
 			`
-		
+			function showTooltip(evt, text) {
+				const tooltip = shadow.getElementById("tooltip");
+				
+				
+				tooltip.style.display = "block";
+				tooltip.innerHTML = text;
+				tooltip.style.left = evt.pageX + 10 + 'px';
+				tooltip.style.top = evt.pageY + 10 + 'px';
+				
+			}
+			  
+			function hideTooltip(e) {
+				const tooltip = shadow.getElementById("tooltip");
+				tooltip.style.display = "none";
+			}
 			const shadow = this.attachShadow({ mode: 'open' });
 			
+			//append tooltip svg to shadow
+			shadow.appendChild(widgetTooltip);
+
+			//append fair metrics svg to shadow
 			shadow.appendChild(widgetContainer);
 
 		}

@@ -11,12 +11,16 @@
 <body>
     <p>The metrics data goes from 0 to 1.</p>
     <div id="main">
-        <fair-metrics width="15%" data-fair-metrics="[0.01,0.1,0.2,0.3]"></fair-metrics>
-        <fair-metrics width="33%" data-fair-metrics="[0.4,0.5,0.6,0.7]"></fair-metrics>
-        <fair-metrics width="33%" data-fair-metrics="[0.8,0.9,0.99,1]"></fair-metrics>
+        <fair-metrics width="15%" data-fair-metrics="[1,0.3,0.7,0.2]"></fair-metrics>
+        <hr>
+        <fair-metrics width="33%" data-fair-metrics="[1,0.5,0.6,0.7]"></fair-metrics>
+        <fair-metrics width="33%" data-fair-metrics="[0.8,0.99,0.9,1]"></fair-metrics>
     </div>
     <p>If no data is given the widget will remain gray            </p>
-    <fair-metrics width="33%" data-fair-metrics="[0.01,0.1,0.2,0.3]"></fair-metrics>
+    <fair-metrics width="100%" data-fair-metrics="[0.01,0,0.99,1]"></fair-metrics>
+
+
+
 </body>
 <script src="./fairwidget.js"></script>
     <style>
