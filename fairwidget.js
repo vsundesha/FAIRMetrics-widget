@@ -7,6 +7,8 @@ class FairMetrics extends HTMLElement {
 		
 		
 		const request = async () => {
+			//TODO
+			//change mock api
 			const response = await fetch(`https://d38f8a85-024d-4bb7-bd5e-a307db491f1f.mock.pstmn.io/${this.metrics}`);
 			const data = await response.json();
 			if (
@@ -31,7 +33,7 @@ class FairMetrics extends HTMLElement {
 				const reusable = `<span style='color:${rcolor}'>Reusable</span> : ${metricsData[3]*100}%`;
 
 				//define tooltip
-				const widgetTooltip = document.createElement('svg');
+				const widgetTooltip = document.createElement('svg')
 				widgetTooltip.setAttribute("id","tooltip");
 				widgetTooltip.setAttribute("display","none");
 				widgetTooltip.setAttribute("style","position:absolute; display:none;");
@@ -145,6 +147,7 @@ class FairMetrics extends HTMLElement {
 			}
 
 		}
+		//call request 
 		request();
 	}
 
