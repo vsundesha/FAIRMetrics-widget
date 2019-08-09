@@ -9,7 +9,7 @@ class FairMetrics extends HTMLElement {
 		const request = async () => {
 			//TODO
 			//change mock api
-			const response = await fetch(`https://d38f8a85-024d-4bb7-bd5e-a307db491f1f.mock.pstmn.io/${this.metrics}`);
+			const response = await fetch(`https://dev-openebench.bsc.es/fairapi/${this.metrics}`);
 			const data = await response.json();
 			if (
 				data &&
@@ -152,8 +152,7 @@ class FairMetrics extends HTMLElement {
 	}
 
 	get metrics() {
-		//return this.getAttribute('data-fair-metrics') || '[0,0,0,0]';
-		return 1;
+		return this.getAttribute('data-fair-metrics') || '';
 	}
 
 	get width() {
