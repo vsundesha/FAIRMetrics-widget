@@ -159,5 +159,4 @@ class FairMetrics extends HTMLElement {
 		return this.getAttribute('width') || '100%';
 	}
 }
-
 customElements.define('fair-metrics', FairMetrics);
